@@ -21,6 +21,7 @@ export default function Home() {
   // Store Data
   const [users, setUsers] = useState([]);
   const [render, setrender] = useState(false);
+
   // For bcrypt salt rounds
   const saltrounds = 10;
 
@@ -66,17 +67,25 @@ export default function Home() {
   };
 
   function verifyUser() {
+    let found = false;
     users.forEach((user) => {
       // Check username and password
       if (
         username == user["Username"] &&
         bcrypt.compareSync(wordpass, user["Password"])
       ) {
+        window.localStorage.setItem("auth", "true");
+        window.localStorage.setItem("user", user["Username"]);
+        found = true;
         router.push("/dashboard");
-      } else {
-        setrender(true);
       }
     });
+
+    if (found) {
+    } else {
+      window.localStorage.setItem("auth", "false");
+      setrender(true);
+    }
   }
 
   // $2a$10$s4sjNWDsPAmadDs7s/eoA.aOOhzc7PlHNm4yU6y5rgePJeSCTN0jO
@@ -111,6 +120,7 @@ export default function Home() {
   // }
 
   useEffect(() => {
+    window.localStorage.setItem("auth", "false");
     setMounted(true);
     getDbData();
   }, []);
