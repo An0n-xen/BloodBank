@@ -4,6 +4,7 @@ import Image from "next/image";
 import mysql from "mysql2/promise";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import bcrypt from "bcryptjs";
+import { useRouter } from "next/router";
 
 export default function Home() {
   // Theme Changer
@@ -15,6 +16,8 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [wordpass, setWordpass] = useState("");
 
+  // rout changer
+  const router = useRouter();
   // Store Data
   const [users, setUsers] = useState([]);
   const [render, setrender] = useState(false);
@@ -62,14 +65,14 @@ export default function Home() {
     }
   };
 
-  function verifyUser(hashedpassword: string) {
+  function verifyUser() {
     users.forEach((user) => {
       // Check username and password
       if (
         username == user["Username"] &&
         bcrypt.compareSync(wordpass, user["Password"])
       ) {
-        console.log("Access granted");
+        router.push("/dashboard");
       } else {
         setrender(true);
       }
@@ -83,8 +86,7 @@ export default function Home() {
   };
 
   function handleSubmit() {
-    const _hashedpassword = Hashpassword();
-    verifyUser(_hashedpassword);
+    verifyUser();
   }
 
   async function getDbData() {
