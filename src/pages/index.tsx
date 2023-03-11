@@ -3,12 +3,26 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import mysql from "mysql2/promise";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import bcrypt from "bcryptjs";
 
 export default function Home() {
+  // Theme Changer
   const { systemTheme, theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
   const currentTheme = theme === "system" ? systemTheme : theme;
+
+  // Username and Password
+  const [username, setUsername] = useState("");
+  const [wordpass, setWordpass] = useState("");
+
+  // Store Data
+  const [users, setUsers] = useState([]);
+  const [render, setrender] = useState(false);
+  // For bcrypt salt rounds
+  const saltrounds = 10;
+
+  let hashedpassword: string;
+  // Api endpoiont
   const UrlEndpoint = "http://localhost:3000/api/getdata";
 
   const renderThemeChange = () => {
@@ -38,10 +52,46 @@ export default function Home() {
     }
   };
 
-  // async function getDbData() {
-  //   const response = await fetch(UrlEndpoint);
-  //   const res = await response.json();
-  // }
+  const renderIncorrectMessage = () => {
+    if (render) {
+      return (
+        <div className="">
+          <h1 className="text-[red]">Incorrect username or password</h1>
+        </div>
+      );
+    }
+  };
+
+  function verifyUser(hashedpassword: string) {
+    users.forEach((user) => {
+      // Check username and password
+      if (
+        username == user["Username"] &&
+        bcrypt.compareSync(wordpass, user["Password"])
+      ) {
+        console.log("Access granted");
+      } else {
+        setrender(true);
+      }
+    });
+  }
+
+  // $2a$10$s4sjNWDsPAmadDs7s/eoA.aOOhzc7PlHNm4yU6y5rgePJeSCTN0jO
+  const Hashpassword = () => {
+    const hashedpassword = bcrypt.hashSync(wordpass, 10);
+    return hashedpassword;
+  };
+
+  function handleSubmit() {
+    const _hashedpassword = Hashpassword();
+    verifyUser(_hashedpassword);
+  }
+
+  async function getDbData() {
+    const response = await fetch(UrlEndpoint);
+    const res = await response.json();
+    setUsers(res.data);
+  }
 
   // async function setDbData() {
   //   const postData = {
@@ -60,6 +110,7 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+    getDbData();
   }, []);
 
   return (
@@ -77,30 +128,40 @@ export default function Home() {
             <p className="text-[1rem] font-roboto">
               Make sure you login with the right credintials
             </p>
-
-            <form action="#" className="mt-4">
-              <input
-                type="text"
-                name=""
-                id=""
-                placeholder="Username"
-                className="m-4 dark:placeholder-white dark:bg-[#121212] border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
-              />
-              <br />
-              <input
-                type="password"
-                name=""
-                id=""
-                placeholder="Password"
-                className="m-4 dark:placeholder-white dark:bg-[#121212] border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
-              />
-              <br />
-              <input
-                type="submit"
-                value="LOGIN"
-                className="dark:hover:text-black dark:hover:bg-white mt-8 text-[1rem] font-Roboto border-2 w-36 py-2 top-2 rounded-[5rem] transition ease-out duration-500 hover:bg-black hover:text-white"
-              />
-            </form>
+            {/* <form action="" className="mt-4"> */}
+            <input
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.currentTarget.value);
+              }}
+              placeholder="Username"
+              className="m-4 dark:placeholder-white dark:bg-[#121212] border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
+            />
+            <br />
+            <input
+              type="password"
+              name="password"
+              value={wordpass}
+              onChange={(e) => {
+                setWordpass(e.currentTarget.value);
+              }}
+              placeholder="Password"
+              className="m-4 dark:placeholder-white dark:bg-[#121212] border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
+            />
+            <br />
+            {/* render Incorrect message */}
+            {renderIncorrectMessage()}
+            <input
+              type="submit"
+              value="LOGIN"
+              onClick={() => {
+                handleSubmit();
+              }}
+              className="dark:hover:text-black dark:hover:bg-white mt-8 text-[1rem] font-Roboto border-2 w-36 py-2 top-2 rounded-[5rem] transition ease-out duration-500 hover:bg-black hover:text-white"
+            />
+            {/* </form> */}
           </div>
           <p className="absolute bottom-16 text-[12px]">
             © Copyright This remain the property of group 5
@@ -132,29 +193,39 @@ export default function Home() {
             Make sure you login with the right credintials
           </p>
 
-          <form action="#" className="mt-4">
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="Username"
-              className="m-4 dark:placeholder-white dark:bg-[#121212] text-center border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
-            />
-            <br />
-            <input
-              type="password"
-              name=""
-              id=""
-              placeholder="Password"
-              className="m-4 dark:placeholder-white dark:bg-[#121212] text-center border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
-            />
-            <br />
-            <input
-              type="submit"
-              value="LOGIN"
-              className="mt-8 text-[1rem] font-Roboto border-2 w-36 py-2 top-2 rounded-[5rem] transition ease-out duration-500 hover:bg-black hover:text-white"
-            />
-          </form>
+          {/* <form action="#" className="mt-4"> */}
+          <input
+            type="text"
+            name=""
+            value={username}
+            onChange={(e) => {
+              setUsername(e.currentTarget.value);
+            }}
+            placeholder="Username"
+            className="m-4 dark:placeholder-white dark:bg-[#121212] text-center border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
+          />
+          <br />
+          <input
+            type="password"
+            name=""
+            value={wordpass}
+            onChange={(e) => {
+              setWordpass(e.currentTarget.value);
+            }}
+            placeholder="Password"
+            className="m-4 dark:placeholder-white dark:bg-[#121212] text-center border-b-2 w-[16rem] transition ease-out duration-500 outline-none focus:border-b-[#9c9696]"
+          />
+          <br />
+          {renderIncorrectMessage()}
+          <input
+            type="submit"
+            value="LOGIN"
+            onClick={() => {
+              handleSubmit();
+            }}
+            className="mt-8 text-[1rem] font-Roboto border-2 w-36 py-2 top-2 rounded-[5rem] transition ease-out duration-500 hover:bg-black hover:text-white"
+          />
+          {/* </form> */}
         </div>
         <p className="text-[12px] text-center mt-10">
           © Copyright This remain the property of group 5
