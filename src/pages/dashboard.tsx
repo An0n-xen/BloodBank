@@ -9,20 +9,80 @@ import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
 } from "@heroicons/react/24/solid";
+import AddDonor from "./components/AddDonor";
+import Dashboard from "./components/Dashboard";
+import Records from "./components/Records";
+import Settings from "./components/Settings";
 
 export default function dashboard() {
   const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === "system" ? systemTheme : theme;
 
+  const [user, setuser] = useState<string | null>(null);
+  const [colunm, setcolumn] = useState("");
+
+  const renderComponentChange = () => {
+    switch (colunm) {
+      case "Dashboard":
+        return <Dashboard />;
+        break;
+
+      case "Add Donor":
+        return <AddDonor />;
+        break;
+
+      case "Records":
+        return <Records />;
+        break;
+
+      default:
+        return <Settings />;
+        break;
+    }
+  };
+
+  function HandleChange(thing: string) {
+    if (thing == colunm) {
+      return "selectedClass";
+    } else {
+      return "unselectedClass";
+    }
+  }
+
   const Dashoptions = [
-    { name: "Dashboard", icon: <ChartBarIcon className="w-5 h-5 mr-3" /> },
-    { name: "Add Donor", icon: <UserPlusIcon className="w-5 h-5 mr-3" /> },
+    {
+      name: "Dashboard",
+      icon: <ChartBarIcon className="w-5 h-5 mr-3" />,
+      selectedClass:
+        "my-2 pl-[25%] bg-[#18b0c827]  flex item-center text-[#49c1d6] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+      unselectedClass:
+        "my-2 pl-[25%]   flex item-center text-[#49c1d6]  hover:bg-[#18b0c827] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+    },
+    {
+      name: "Add Donor",
+      icon: <UserPlusIcon className="w-5 h-5 mr-3" />,
+      selectedClass:
+        "my-2 pl-[25%] bg-[#18b0c827]   flex item-center text-[#49c1d6]   py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+      unselectedClass:
+        "my-2 pl-[25%] flex item-center text-[#49c1d6]  hover:bg-[#18b0c827] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+    },
     {
       name: "Records",
       icon: <ClipboardDocumentListIcon className="w-5 h-5 mr-3" />,
+      selectedClass:
+        "my-2 pl-[25%] bg-[#18b0c827] flex item-center text-[#49c1d6] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+      unselectedClass:
+        "my-2 pl-[25%]  flex item-center text-[#49c1d6]  hover:bg-[#18b0c827] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
     },
-    { name: "Settings", icon: <Cog6ToothIcon className="w-5 h-5 mr-3" /> },
+    {
+      name: "Settings",
+      icon: <Cog6ToothIcon className="w-5 h-5 mr-3" />,
+      selectedClass:
+        "my-2 pl-[25%] bg-[#18b0c827]  flex item-center text-[#49c1d6] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+      unselectedClass:
+        "my-2 pl-[25%] flex item-center text-[#49c1d6]  hover:bg-[#18b0c827] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1 cursor-pointer",
+    },
   ];
 
   const renderThemeChange = () => {
@@ -49,16 +109,38 @@ export default function dashboard() {
     }
   };
 
+  const renderColumns = () => {
+    return Dashoptions.map((item, key: number) => {
+      return (
+        <div
+          key={key}
+          onClick={(e) => {
+            setcolumn(item.name);
+          }}
+          className={item[HandleChange(item.name)]}
+        >
+          {item.icon}
+          <ul key={key} className="font-medium font-Roboto">
+            {item.name}
+          </ul>
+        </div>
+      );
+    });
+  };
+
   useEffect(() => {
     window.localStorage.getItem("auth") == "true"
       ? router.push("/dashboard")
       : router.push("/");
+
+    setuser(window.localStorage.getItem("user"));
   }, []);
   return (
     <div className="transition ease-out duration-500">
       {renderThemeChange()}
+
       <div className="flex items-center justify-between">
-        <div className="bg-[white] dark:bg-[#161616] dark:text-[#65baef] w-[20%] h-screen">
+        <div className="bg-[white] dark:bg-[#131313] dark:shadow-md dark:text-[#65baef] w-[20%] h-screen">
           <div className="flex  justify-center">
             <h1 className="font-black text-3xl text-center mt-10 dark:text-[white]">
               B
@@ -69,26 +151,18 @@ export default function dashboard() {
           </div>
 
           <div className="mt-16">
-            {Dashoptions.map((item, key: number) => {
-              return (
-                <div className="my-2 pl-[25%] flex item-center text-[#49c1d6]  hover:bg-[#18b0c827] py-3 mx-3 rounded-md transition ease-out duration-300 hover:border-1">
-                  {item.icon}
-                  <ul key={key} className="font-medium font-Roboto">
-                    {item.name}
-                  </ul>
-                </div>
-              );
-            })}
-
-            <div className="absolute flex bottom-5 items-center ml-16">
+            {renderColumns()}
+            <div className="absolute flex bottom-5 items-center ml-10 hover:bg-[#18b0c827] py-4 px-10 rounded-md hover:cursor-pointer">
               <div className="bg-[#524f4f] rounded-md w-16 h-16 mr-5"></div>
               <h1 className="font-mono font-black text-xl text-center text-[#514949] dark:text-[#f7f7f7]">
-                Xen
+                {user}
               </h1>
             </div>
           </div>
         </div>
-        <div className="bg-[#e4e8fb] dark:bg-[#1a2335] w-[80%] h-screen"></div>
+        <div className="bg-[#e4e8fb] dark:bg-[#1a2335] w-[80%] h-screen pt-8">
+          {renderComponentChange()}
+        </div>
       </div>
     </div>
   );

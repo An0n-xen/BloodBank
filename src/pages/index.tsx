@@ -88,14 +88,14 @@ export default function Home() {
     }
   }
 
-  // $2a$10$s4sjNWDsPAmadDs7s/eoA.aOOhzc7PlHNm4yU6y5rgePJeSCTN0jO
   const Hashpassword = () => {
     const hashedpassword = bcrypt.hashSync(wordpass, 10);
-    return hashedpassword;
+    console.log(hashedpassword);
   };
 
   function handleSubmit() {
     verifyUser();
+    // Hashpassword();
   }
 
   async function getDbData() {
