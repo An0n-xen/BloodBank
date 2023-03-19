@@ -6,10 +6,10 @@ import { Dropdown } from "@nextui-org/react";
 
 const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   const UrlEndpoint = "http://localhost:3000/api/getdata";
-  const [Typerecord, seTyperecord] = useState(1);
+  const [Typerecord, seTyperecord] = useState(0);
   const [records, setRecords] = useState([]);
   const [records2, setRecords2] = useState([]);
-  const [selected, setselected] = useState<any>(new Set(["Table"]));
+  const [selected, setselected] = useState<any>(new Set(["Donors"]));
   const [input, setinput] = useState("");
 
   const SelectedValue = useMemo(
@@ -19,7 +19,16 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
 
   function HandleSearch() {
     const userinput = ColumnSearch();
+
     SetRecordData(userinput.cols, userinput.search);
+  }
+
+  function changeTable() {
+    if (SelectedValue == "Donors") {
+      seTyperecord(0);
+    } else {
+      seTyperecord(1);
+    }
   }
 
   function ColumnSearch() {
@@ -31,29 +40,29 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   }
 
   const cols1 = [
-    { key: "Users", label: "DonorID".toLocaleUpperCase() },
-    { key: "FirstName", label: "FirstName".toLocaleUpperCase() },
-    { key: "LastName", label: "LastName".toLocaleUpperCase() },
-    { key: "Age", label: "Age".toLocaleUpperCase() },
-    { key: "Telephone", label: "Telephone".toLocaleUpperCase() },
-    { key: "Email", label: "Email".toLocaleUpperCase() },
-    { key: "BloodType", label: "BloodType".toLocaleUpperCase() },
-    { key: "Gender", label: "Gender".toLocaleUpperCase() },
+    { key: "Users", label: "DonorID" },
+    { key: "FirstName", label: "FirstName" },
+    { key: "LastName", label: "LastName" },
+    { key: "Age", label: "Age" },
+    { key: "Telephone", label: "Telephone" },
+    { key: "Email", label: "Email" },
+    { key: "BloodType", label: "BloodType" },
+    { key: "Gender", label: "Gender" },
   ];
 
   const cols2 = [
-    { key: "EntryID", label: "EntryID".toLocaleUpperCase() },
-    { key: "A+", label: "A+".toLocaleUpperCase() },
-    { key: "A-", label: "A-".toLocaleUpperCase() },
-    { key: "B+", label: "B+".toLocaleUpperCase() },
-    { key: "B-", label: "B-".toLocaleUpperCase() },
-    { key: "B+", label: "B+".toLocaleUpperCase() },
-    { key: "O+", label: "O+".toLocaleUpperCase() },
-    { key: "O-", label: "O-".toLocaleUpperCase() },
-    { key: "AB+", label: "AB+".toLocaleUpperCase() },
-    { key: "Date", label: "Date".toLocaleUpperCase() },
-    { key: "EmployeeName", label: "EmployeeName".toLocaleUpperCase() },
-    { key: "Donor", label: "Donor".toLocaleUpperCase() },
+    { key: "EntryID", label: "EntryID" },
+    { key: "A+", label: "A+" },
+    { key: "A-", label: "A-" },
+    { key: "B+", label: "B+" },
+    { key: "B-", label: "B-" },
+    { key: "B+", label: "B+" },
+    { key: "O+", label: "O+" },
+    { key: "O-", label: "O-" },
+    { key: "AB+", label: "AB+" },
+    { key: "Date", label: "Date" },
+    { key: "EmployeeName", label: "EmployeeName" },
+    { key: "Donor", label: "Donor" },
   ];
 
   function setRecord(r: number) {
@@ -105,33 +114,38 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   }
 
   async function SetRecordData(column: string, userinput: string) {
-    if (Typerecord == 0) {
-      const postData = {
-        query: `SELECT * from Donors where ${column} = ${userinput}`,
-      };
-      const response = await fetch(UrlEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
+    if (column && userinput) {
+      if (Typerecord == 0) {
+        const postData = {
+          query: `SELECT * from Donors where ${column} = '${userinput}'`,
+        };
+        const response = await fetch(UrlEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        });
 
-      const res = await response.json();
-      setRecords(res.data);
+        const res = await response.json();
+        setRecords(res.data);
+      } else {
+        const postData2 = {
+          query: `SELECT * from BloodEntry where ${column} = '${userinput}'`,
+        };
+        const response2 = await fetch(UrlEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData2),
+        });
+        const res2 = await response2.json();
+        setRecords2(res2.data);
+      }
     } else {
-      const postData2 = {
-        query: `SELECT * from Donors where ${column} = ${userinput}`,
-      };
-      const response2 = await fetch(UrlEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData2),
-      });
-      const res2 = await response2.json();
-      setRecords2(res2.data);
+      setRecords(ds);
+      setRecords2(Bl);
     }
   }
 
@@ -152,7 +166,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           <tbody className={Styles.tbody}>
             {setRecord(Typerecord).map((item: any, row: number) => {
               return (
-                <tr className="border-b-2 overflow-y-hidden">
+                <tr className="border-b-2 dark:hover:bg-[#c25959] hover:bg-[#18b0c827] transition ease-out duration-100">
                   {Object.keys(item).map((staff) => {
                     return <td className="">{item[staff]}</td>;
                   })}
@@ -200,6 +214,10 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   };
 
   useEffect(() => {
+    changeTable();
+  }, [SelectedValue]);
+
+  useEffect(() => {
     // getRecordData();
     setRecords(ds);
     setRecords2(Bl);
@@ -212,7 +230,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     >
       {/* {renderTable()} */}
       <div className="flex justify-center items-center my-8">
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <h1
             className="mr-10 border-2 p-1 px-2 rounded-sm font-bold hover:bg-[#636060] hover:border-[#636060ac] hover:text-[white] cursor-pointer"
             onClick={() => {
@@ -229,7 +247,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           >
             Blood Info
           </h1>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-end ml-32">
           <div className="ml-10">
@@ -258,12 +276,12 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
               onChange={(e) => {
                 setinput(e.target.value);
               }}
-              className="border-2 rounded-md pl-4 dark:bg-white dark:text-black"
+              className="border-2 rounded-sm pl-4 dark:bg-white dark:text-black"
             />
           </div>
           <div className="ml-5 ">
             <Button
-              className="w-10"
+              className="w-10 rounded-sm"
               onPress={() => {
                 HandleSearch();
               }}
