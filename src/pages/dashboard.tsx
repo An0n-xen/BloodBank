@@ -14,7 +14,7 @@ import Dashboard from "./components/Dashboard";
 import Records from "./components/Records";
 import Settings from "./components/Settings";
 
-export default function dashboard() {
+export default function dashboard({ donors, Blood }) {
   const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === "system" ? systemTheme : theme;
@@ -33,7 +33,7 @@ export default function dashboard() {
         break;
 
       case "Records":
-        return <Records />;
+        return <Records ds={donors} Bl={Blood} />;
         break;
 
       default:
@@ -129,9 +129,9 @@ export default function dashboard() {
   };
 
   useEffect(() => {
-    window.localStorage.getItem("auth") == "true"
-      ? router.push("/dashboard")
-      : router.push("/");
+    // window.localStorage.getItem("auth") == "true"
+    //   ? router.push("/dashboard")
+    //   : router.push("/");
 
     setuser(window.localStorage.getItem("user"));
   }, []);
@@ -160,10 +160,43 @@ export default function dashboard() {
             </div>
           </div>
         </div>
-        <div className="bg-[#e4e8fb] dark:bg-[#1a2335] w-[80%] h-screen pt-8">
+        <div className="bg-[#e4e8fb] dark:bg-[#1a2335] w-[80%] h-screen pt-8 overflow-hidden">
           {renderComponentChange()}
         </div>
       </div>
     </div>
   );
 }
+
+export const getStaticProps = async () => {
+  const UrlEndpoint = "http://localhost:3000/api/getdata";
+
+  const postData = {
+    query: "SELECT * from Donors",
+  };
+  const response = await fetch(UrlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postData),
+  });
+
+  const res = await response.json();
+
+  const postData2 = {
+    query: "SELECT * from bloodentry",
+  };
+  const response2 = await fetch(UrlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postData2),
+  });
+  const res2 = await response2.json();
+
+  return {
+    props: { donors: res.data, Blood: res2.data },
+  };
+};

@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 
 export default async function handler(req: any, res: any) {
+  // Linking to mysql db
   const dbconnection = await mysql.createConnection({
     host: "localhost",
     port: 3306,

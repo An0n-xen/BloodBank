@@ -99,9 +99,15 @@ export default function Home() {
   }
 
   async function getDbData() {
-    const response = await fetch(UrlEndpoint);
-    const res = await response.json();
-    setUsers(res.data);
+    try {
+      const response = await fetch(UrlEndpoint);
+      const res = await response.json();
+      setUsers(res.data);
+    } catch (error) {
+      const response = await fetch("http://192.168.43.138:3000/api/getdata");
+      const res = await response.json();
+      setUsers(res.data);
+    }
   }
 
   // async function setDbData() {
