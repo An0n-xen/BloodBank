@@ -36,8 +36,12 @@ export default function dashboard({ donors, Blood }) {
         return <Records ds={donors} Bl={Blood} />;
         break;
 
-      default:
+      case "Settings":
         return <Settings />;
+        break;
+
+      default:
+        return <div></div>;
         break;
     }
   };

@@ -173,7 +173,7 @@ const AddDonor = () => {
               type="number"
               name=""
               id="dob"
-              className="mb-3 w-16 rounded-sm"
+              className="mb-3 w-16 rounded-sm outline-none dark:bg-[#161C29] border-b-2"
               onChange={(e) => {
                 setdate(e.target.value);
               }}
