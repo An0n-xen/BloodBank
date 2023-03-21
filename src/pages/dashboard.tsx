@@ -129,9 +129,9 @@ export default function dashboard({ donors, Blood }) {
   };
 
   useEffect(() => {
-    // window.localStorage.getItem("auth") == "true"
-    //   ? router.push("/dashboard")
-    //   : router.push("/");
+    window.localStorage.getItem("auth") == "true"
+      ? router.push("/dashboard")
+      : router.push("/");
 
     setuser(window.localStorage.getItem("user"));
   }, []);

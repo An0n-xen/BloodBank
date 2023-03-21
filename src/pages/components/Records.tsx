@@ -130,6 +130,43 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
         const res = await response.json();
         setRecords(res.data);
       } else {
+        switch (column) {
+          case "A+":
+            column = "APlus";
+            break;
+
+          case "A-":
+            column = "AMinus";
+            break;
+
+          case "B+":
+            column = "BPlus";
+            break;
+
+          case "B-":
+            column = "BMinus";
+            break;
+
+          case "O+":
+            column = "OPlus";
+            break;
+
+          case "O-":
+            column = "OMinus";
+            break;
+
+          case "AB+":
+            column = "ABPlus";
+            break;
+
+          case "AB-":
+            column = "ABMinus";
+            break;
+
+          default:
+            column = column;
+            break;
+        }
         const postData2 = {
           query: `SELECT * from BloodEntry where ${column} = '${userinput}'`,
         };
