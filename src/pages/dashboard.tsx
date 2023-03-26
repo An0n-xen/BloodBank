@@ -25,7 +25,7 @@ export default function dashboard({ donors, Blood }) {
   const renderComponentChange = () => {
     switch (colunm) {
       case "Dashboard":
-        return <Dashboard />;
+        return <Dashboard ds={donors} Bl={Blood} />;
         break;
 
       case "Add Donor":

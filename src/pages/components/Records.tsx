@@ -62,7 +62,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     { key: "AB+", label: "AB+" },
     { key: "Date", label: "Date" },
     { key: "EmployeeName", label: "EmployeeName" },
-    { key: "Donor", label: "Donor" },
+    { key: "DonorID", label: "DonorID" },
   ];
 
   function setRecord(r: number) {
