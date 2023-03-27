@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Slider from "react-slick";
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -7,20 +8,30 @@ import {
   BarElement,
   PointElement,
   LineElement,
-  Filler,
   Title,
   Tooltip,
   Legend,
+  ArcElement,
 } from "chart.js";
-import { Radar, Line, Bar, PolarArea, Pie } from "react-chartjs-2";
-ChartJS.defaults.color = "white";
+import { Radar, Line, Bar, PolarArea, Pie, Doughnut } from "react-chartjs-2";
+import { useTheme } from "next-themes";
+import { changeTheme } from "@nextui-org/react";
+import { Agent } from "http";
+
 const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   const [FullData, setFullData] = useState([]);
+  const { systemTheme, theme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
 
+  ChartJS.defaults.color = "#b52eea";
   ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    ArcElement,
     Title,
     Tooltip,
     Legend
@@ -52,6 +63,14 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   };
 
   const count: number[] = [];
+
+  const Settings = {
+    dots: true,
+    Infinity: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
   async function getFullData() {
     const postData = {
@@ -188,6 +207,25 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     return Names;
   }
 
+  function ChangeColor() {
+    if (currentTheme === "dark") {
+      const colorScheme = { text: "white", border: "" };
+      return colorScheme;
+    } else {
+      const colorScheme1 = { text: "#524F4F", border: "#b7bac1" };
+      return colorScheme1;
+    }
+  }
+
+  function ColorDou() {
+    if (currentTheme === "dark") {
+      const colorScheme = { border: "#161c29" };
+      return colorScheme;
+    } else {
+      const colorScheme1 = { border: "white" };
+      return colorScheme1;
+    }
+  }
   function BloodCounter() {
     Object.keys(GenderCount).map((item) => {
       GenderCount[item] = 0;
@@ -245,11 +283,28 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           BloodCount[item["BloodType"]] += 1;
           break;
       }
+
+      if (item["Age"] >= 20 && item["Age"] < 30) {
+        AgeRanges[20] += 1;
+      } else if (item["Age"] >= 30 && item["Age"] < 40) {
+        AgeRanges[30] += 1;
+      } else if (item["Age"] >= 40 && item["Age"] < 50) {
+        AgeRanges[40] += 1;
+      } else if (item["Age"] >= 50 && item["Age"] < 60) {
+        AgeRanges[50] += 1;
+      } else if (item["Age"] >= 60 && item["Age"] < 70) {
+        AgeRanges[60] += 1;
+      } else if (item["Age"] >= 70 && item["Age"] <= 80) {
+        AgeRanges[70] += 1;
+      } else if (item["Age"] >= 10 && item["Age"] < 20) {
+        AgeRanges[10] += 1;
+      }
       count.push(item["DonorID"]);
     });
   }
 
-  BloodCounter();
+  DonorCounter();
+
   Filter();
 
   const data = {
@@ -271,6 +326,52 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           BloodCount["AB-"],
         ],
         backgroundColor: ["red"],
+      },
+    ],
+  };
+
+  const ageData = {
+    labels: [
+      "15-19",
+      "20-29",
+      "30-39",
+      "40-49",
+      "50-59",
+      "60-69",
+      "70-79",
+      "80-89",
+    ],
+    datasets: [
+      {
+        label: "Age Ranges",
+        fill: true,
+        borderColor: "#36A2EB",
+
+        data: [
+          AgeRanges[10],
+          AgeRanges[20],
+          AgeRanges[30],
+          AgeRanges[40],
+          AgeRanges[50],
+          AgeRanges[60],
+          AgeRanges[70],
+          AgeRanges[80],
+        ],
+        backgroundColor: ["red"],
+      },
+    ],
+  };
+
+  const genderData = {
+    labels: ["Male", "Female"],
+    datasets: [
+      {
+        label: "Gender",
+        fill: true,
+        borderColor: ColorDou().border,
+
+        data: [GenderCount["Male"], GenderCount["Female"]],
+        backgroundColor: ["#492e6f", "#398c6f"],
       },
     ],
   };
@@ -319,31 +420,111 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   }, []);
 
   return (
-    <div
-      data-aos="zoom-in"
-      className="text-3xl flex items-center justify-center font-black"
-    >
-      <div className="w-[20rem]">
-        <Bar
-          data={data}
-          options={{
-            scales: {
-              y: {
-                ticks: {
-                  color: "white",
-                },
-                beginAtZero: true,
-              },
-              x: {
-                ticks: {
-                  color: "white",
-                },
-              },
-            },
-          }}
-        />
-        <Bar data={data} />
-      </div>
+    <div className="text-3xlfont-black p-8 ">
+      <Slider {...Settings} className="">
+        <div className="">
+          <div className="flex gap-24 mx-5 items-center justify-center ">
+            <div
+              data-aos="fade-right"
+              className="w-[28rem] h-[21rem] px-5 dark:bg-[#161c29] rounded-lg bg-[white] flex items-center justify-center"
+            >
+              <Bar
+                data={data}
+                options={{
+                  scales: {
+                    y: {
+                      ticks: {
+                        color: ChangeColor().text,
+                      },
+                      grid: {
+                        color: ChangeColor().border,
+                      },
+                    },
+                    x: {
+                      ticks: {
+                        color: ChangeColor().text,
+                      },
+                      grid: {
+                        color: "",
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            <div
+              data-aos="fade-left"
+              className="w-[28rem] h-[21rem] px-5 dark:bg-[#161c29] rounded-lg bg-[white] flex items-center justify-center"
+            >
+              <Radar
+                data={data}
+                options={{
+                  scales: {
+                    r: {
+                      grid: {
+                        color: "#7a7272",
+                      },
+                      angleLines: {
+                        color: "#7a7272",
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex gap-24 mx-5 items-center justify-center mt-5">
+            <div
+              data-aos="fade-right"
+              className="w-[27rem] h-[22rem] dark:bg-[#161c29] rounded-lg bg-[#ffffff] flex justify-center items-center px-2"
+            >
+              <Bar
+                data={ageData}
+                options={{
+                  scales: {
+                    y: {
+                      ticks: { color: ChangeColor().text },
+                    },
+                    x: {
+                      ticks: { color: ChangeColor().text },
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            <div
+              data-aos="fade-right"
+              className="w-[27rem] h-[22rem] dark:bg-[#161c29] rounded-lg bg-[#ffffff] flex justify-center items-center"
+            >
+              <Doughnut data={genderData} />
+            </div>
+          </div>
+        </div>
+
+        <div className="">
+          <div className="flex gap-10">
+            <div
+              data-aos="fade-right"
+              className="w-[25rem] h-[20rem] dark:bg-[#161c29] rounded-lg bg-[white]"
+            ></div>
+            <div
+              data-aos="zoom-in"
+              className="w-[25rem] h-[20rem] dark:bg-[#161c29] rounded-lg bg-[white]"
+            ></div>
+            <div
+              data-aos="fade-left"
+              className="w-[25rem] h-[20rem] dark:bg-[#161c29] rounded-lg bg-[white]"
+            ></div>
+          </div>
+
+          <div
+            data-aos="fade-up"
+            className="w-full h-[22rem] dark:bg-[#161c29] rounded-lg mt-5 bg-[white]"
+          ></div>
+        </div>
+      </Slider>
     </div>
   );
 };
