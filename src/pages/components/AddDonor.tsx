@@ -401,7 +401,7 @@ const AddDonor = () => {
           onClick={() => {
             setmake(0);
           }}
-          className={`font-bold text-xl font-Roboto ${showUnderline(
+          className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
             "new"
           )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
         >
@@ -411,7 +411,7 @@ const AddDonor = () => {
           onClick={() => {
             setmake(1);
           }}
-          className={`font-bold text-xl font-Roboto ${showUnderline(
+          className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
             "exist"
           )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
         >

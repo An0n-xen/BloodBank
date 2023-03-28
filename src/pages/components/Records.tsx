@@ -203,7 +203,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           <tbody className={Styles.tbody}>
             {setRecord(Typerecord).map((item: any, row: number) => {
               return (
-                <tr className="border-b-2 dark:hover:bg-[#c25959] hover:bg-[#18b0c827] transition ease-out duration-100">
+                <tr className="border-b-2 dark:hover:bg-[#18b0c827] hover:bg-[#18b0c827] transition ease-out duration-100">
                   {Object.keys(item).map((staff) => {
                     return <td className="">{item[staff]}</td>;
                   })}
