@@ -38,7 +38,7 @@ const Settings = () => {
 
   async function getUser() {
     const postData = {
-      query: `select * from users`,
+      query: `select * from users where Username = '${user}'`,
     };
 
     const response = await fetch(UrlEndpoint, {
@@ -70,17 +70,16 @@ const Settings = () => {
   }
 
   function checkChange() {
-    if (
-      db[0]["Username"] != user.toString() ||
-      !bcrypt.compareSync(chpass, db[0]["Password"])
-    ) {
-      if (db[0]["Username"] != user.toString()) {
-        return 1;
-      } else {
+    if (chuser != "" || chpass != "") {
+      if (chuser != "" && chpass != "") {
+        return 3;
+      } else if (chpass != "") {
         return 2;
+      } else {
+        return 1;
       }
     } else {
-      return 3;
+      console.log("make");
     }
   }
 
@@ -88,17 +87,24 @@ const Settings = () => {
     switch (checkChange()) {
       case 1:
         const query: string = `Update users set Username = '${chuser}' where ID = ${db[0]["ID"]}`;
-        console.log(query);
+        setUser(query);
         break;
 
       case 2:
-        const query1: string = `Update users set Password = '${chpass}' where ID  = ${db[0]["ID"]}`;
-        console.log(query1);
+        const query1: string = `Update users set Password = '${Hashpassword()}' where ID  = ${
+          db[0]["ID"]
+        }`;
+        setUser(query1);
+        break;
+
+      case 3:
+        const query2: string = `Update users set Username = '${chuser}', Password = '${Hashpassword()}' where ID ${
+          db[0]["ID"]
+        }`;
+        setUser(query2);
         break;
 
       default:
-        const query2: string = `Update users set Username = '${chuser}', Password = '${chpass}' where ID ${db[0]["ID"]}`;
-        console.log(query2);
         break;
     }
   }
@@ -135,7 +141,7 @@ const Settings = () => {
           <br />
           <br />
           <input
-            type="text"
+            type="password"
             name=""
             id=""
             placeholder="Change Password"
