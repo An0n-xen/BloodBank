@@ -48,6 +48,16 @@ const AddDonor = () => {
 
   const age = 24;
 
+  const currentdate = new Date();
+
+  function setDate() {
+    const day = currentdate.getDate();
+    const month = currentdate.getMonth();
+    const year = currentdate.getFullYear();
+
+    return `${year}-${month}-${day}`;
+  }
+
   function showUnderline(nan: string) {
     if (make == 0 && nan == "new") {
       return "border-b-2 border-b-[blue]";
@@ -281,7 +291,7 @@ const AddDonor = () => {
     });
 
     const res = await response.json();
-    console.log(res.data[0]["count(*)"]);
+    console.log(res.data);
   }
 
   async function getNeeded() {
@@ -370,17 +380,19 @@ const AddDonor = () => {
         lname,
         date
       );
-      const query: string = `insert into donors(DonorID,FirstName,LastName,Age,Telephone,Email,BloodType,Gender) values (${bcount},${fname},${lname},${age},${tel},${email},${SelectedValue},${SelectedGender})`;
-      console.log(query);
+      const query: string = `insert into donors(DonorID,FirstName,LastName,Age,Telephone,Email,BloodType,Gender) values (${bcount},'${fname}','${lname}',${age},${tel},'${email}','${SelectedValue}','${SelectedGender}')`;
+      // console.log(query);
+      await setDataRecordData(query);
     } else {
       const querresults: any = await getNeeded();
 
       const colName: string = checkBlood(querresults["BloodType"]);
 
-      const query: string = `insert into BloodEntry(EntryID,EmployeeName,DonorID,${colName}) values(${dcount},${window.localStorage.getItem(
+      const query: string = `insert into BloodEntry(EntryID,EmployeeName,DonorID,${colName},Date) values(${dcount},'${window.localStorage.getItem(
         "user"
-      )},${querresults["DonorID"]},${1})`;
-      console.log(query);
+      )}',${querresults["DonorID"]},${1},'${setDate()}')`;
+      // console.log(query);
+      await setDataRecordData(query);
     }
   }
 
