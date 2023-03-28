@@ -627,9 +627,10 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   }, []);
 
   return (
-    <div className="text-3xlfont-black p-8 ">
+    <div className="px-8 py-4">
       <Slider {...Settings} className="">
-        <div className="">
+        <div className="relative z-0">
+          <h1 className="text-xl font-Robot font-bold">DonorCharts</h1>
           <div className="flex gap-24 mx-5 items-center justify-center ">
             <div
               data-aos="fade-right"
@@ -711,7 +712,8 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
         </div>
 
         <div className="">
-          <div className="flex gap-10">
+          <h1 className="text-xl font-Robot font-bold">BloodEntry Charts</h1>
+          <div className="flex gap-6">
             <div
               data-aos="fade-right"
               className="w-[25rem] h-[20rem] dark:bg-[#161c29] rounded-lg bg-[white] flex items-center px-5 py-1"

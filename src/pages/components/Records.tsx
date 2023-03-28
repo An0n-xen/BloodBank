@@ -190,7 +190,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     return (
       <div
         data-aos="zoom-in"
-        className="border-2 dark:border-[#27344fbe] p-6  rounded-sm overflow-auto h-screen dark:text-black flex items-start justify-center dark:border-t-2 mb-20"
+        className="border-2 dark:border-[#1d2537be] p-6  rounded-sm overflow-auto  dark:text-black flex items-start justify-center dark:border-t-2 h-[80vh]"
       >
         <table className={Styles.table}>
           <thead>
@@ -213,38 +213,6 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           </tbody>
         </table>
       </div>
-      // <Table
-      //   aria-label="Example table with static content"
-      //   // css={{
-      //   //   height: "auto",
-      //   //   minWidth: "100%",
-      //   // }}
-      // >
-      //   <Table.Header>
-      //     {cols.map((item: any) => {
-      //       return (
-      //         <Table.Column css={{ color: "blue" }}>{item.key}</Table.Column>
-      //       );
-      //     })}
-      //   </Table.Header>
-      //   <Table.Body>
-      //     {records.map((item: any) => {
-      //       return (
-      //         <Table.Row key="1" css={{ display: "block" }}>
-      //           {Object.keys(item).map((staff) => {
-      //             return (
-      //               <Table.Cell css={{ marginRight: 3 }}>
-      //                 {item[staff]}
-      //               </Table.Cell>
-      //             );
-      //           })}
-      //           {/*
-      //           <Table.Cell>{item["Password"]}</Table.Cell> */}
-      //         </Table.Row>
-      //       );
-      //     })}
-      //   </Table.Body>
-      // </Table>
     );
 
     // );
@@ -263,9 +231,8 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   return (
     <div
       data-aos="zoom-in"
-      className="text-xl  items-center justify-center  bg-[white] m-10 rounded-md py-1 m-b-10 dark:bg-[#27344f]"
+      className="text-xl items-center justify-center bg-[white] mx-10 my-5 rounded-md py-1 m-b-10 dark:bg-[#27344f]"
     >
-      {/* {renderTable()} */}
       <div className="flex justify-center items-center my-8">
         {/* <div className="flex items-center">
           <h1
@@ -328,7 +295,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
           </div>
         </div>
       </div>
-      {renderTable()}
+      <div className="">{renderTable()}</div>
     </div>
   );
 };
