@@ -6,9 +6,14 @@ import { Dropdown } from "@nextui-org/react";
 
 const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   const UrlEndpoint = "http://localhost:3000/api/getdata";
+  // Check what records is rendered either Donors or BloodEntry
   const [Typerecord, seTyperecord] = useState(0);
+  // Setting Donor records
   const [records, setRecords] = useState([]);
+  // Setting BloodEntry records
   const [records2, setRecords2] = useState([]);
+
+  // Remeber what record is rendered
   const [selected, setselected] = useState<any>(new Set(["Donors"]));
   const [input, setinput] = useState("");
 
@@ -17,12 +22,14 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     [selected]
   );
 
+  // Search function
   function HandleSearch() {
     const userinput = ColumnSearch();
 
     SetRecordData(userinput.cols, userinput.search);
   }
 
+  // Render Donor or BloodEntry table depending what the user chooses
   function changeTable() {
     if (SelectedValue == "Donors") {
       seTyperecord(0);
@@ -31,6 +38,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     }
   }
 
+  // Another search function
   function ColumnSearch() {
     const userinput: string[] = input.split(":");
     const cols: string = userinput[0];
@@ -39,6 +47,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     return { cols: cols, search: search };
   }
 
+  // Setting Donor table head
   const cols1 = [
     { key: "Users", label: "DonorID" },
     { key: "FirstName", label: "FirstName" },
@@ -50,6 +59,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     { key: "Gender", label: "Gender" },
   ];
 
+  // Setting bloodEntry table head
   const cols2 = [
     { key: "EntryID", label: "EntryID" },
     { key: "A+", label: "A+" },
@@ -65,6 +75,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     { key: "DonorID", label: "DonorID" },
   ];
 
+  // Changes table data to Donor records or BloodEntry records
   function setRecord(r: number) {
     if (r == 0) {
       return records;
@@ -84,34 +95,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
 
   setCols(Typerecord);
 
-  async function getRecordData() {
-    const postData = {
-      query: "SELECT * from Donors",
-    };
-    const response = await fetch(UrlEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    });
-
-    const res = await response.json();
-    setRecords(res.data);
-
-    const postData2 = {
-      query: "SELECT * from bloodentry",
-    };
-    const response2 = await fetch(UrlEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData2),
-    });
-    const res2 = await response2.json();
-    setRecords2(res2.data);
-  }
+  // Not in user
 
   async function SetRecordData(column: string, userinput: string) {
     if (column && userinput) {
@@ -186,6 +170,7 @@ const Records = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     }
   }
 
+  // Table renderer of the Records in table
   const renderTable = () => {
     return (
       <div

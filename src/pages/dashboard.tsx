@@ -13,15 +13,26 @@ import AddDonor from "./components/AddDonor";
 import Dashboard from "./components/Dashboard";
 import Records from "./components/Records";
 import Settings from "./components/Settings";
+import { getuid } from "process";
 
-export default function dashboard({ donors, Blood }) {
+export default function dashboard({ donors, Blood, Users }) {
   const router = useRouter();
+
+  const UrlEndpoint = "http://localhost:3000/api/getdata";
+  // Theme changer
   const { systemTheme, theme, setTheme } = useTheme();
+  // Ternary operator to check system theme
   const currentTheme = theme === "system" ? systemTheme : theme;
+  const [count, setcount] = useState(0);
 
   const [user, setuser] = useState<string | null>(null);
   const [colunm, setcolumn] = useState("");
+  // const [empID, setempID] = useState();
 
+  let empID = 0;
+  const currentdate = new Date();
+
+  // Render Component selected the the side bar
   const renderComponentChange = () => {
     switch (colunm) {
       case "Dashboard":
@@ -46,6 +57,23 @@ export default function dashboard({ donors, Blood }) {
     }
   };
 
+  async function getRlenght() {
+    const postData = {
+      query: "select count(*) from assignments.session",
+    };
+    const response = await fetch(UrlEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    });
+
+    const res = await response.json();
+    setcount(res.data[0]["count(*)"]);
+  }
+
+  // render styling change when component or column is select
   function HandleChange(thing: string) {
     if (thing == colunm) {
       return "selectedClass";
@@ -54,6 +82,41 @@ export default function dashboard({ donors, Blood }) {
     }
   }
 
+  function setDate() {
+    const day = currentdate.getDate();
+    const month = currentdate.getMonth();
+    const year = currentdate.getFullYear();
+
+    return `${year}-${month}-${day}`;
+  }
+
+  async function setSession(query: string) {
+    const postData = {
+      query: query,
+    };
+
+    const response = await fetch(UrlEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    });
+
+    const res = await response.json();
+  }
+
+  function getUserId() {
+    Users.map((item: object) => {
+      if (user == item["Username"]) {
+        empID = item["ID"];
+      }
+    });
+  }
+
+  getUserId();
+
+  // // Array of Dashboardopitons and corresponding on selected and not selected styling options
   const Dashoptions = [
     {
       name: "Dashboard",
@@ -89,6 +152,7 @@ export default function dashboard({ donors, Blood }) {
     },
   ];
 
+  // Renders Theme Changer
   const renderThemeChange = () => {
     if (currentTheme === "dark") {
       return (
@@ -113,6 +177,7 @@ export default function dashboard({ donors, Blood }) {
     }
   };
 
+  // Render Dashboard option button to page
   const renderColumns = () => {
     return Dashoptions.map((item, key: number) => {
       return (
@@ -133,12 +198,16 @@ export default function dashboard({ donors, Blood }) {
   };
 
   useEffect(() => {
+    // Rout protection
+    // Checking if user loged in first
     window.localStorage.getItem("auth") == "true"
       ? router.push("/dashboard")
       : router.push("/");
 
     setuser(window.localStorage.getItem("user"));
+    getRlenght();
   }, []);
+
   return (
     <div className="transition ease-out duration-500">
       {renderThemeChange()}
@@ -156,7 +225,16 @@ export default function dashboard({ donors, Blood }) {
 
           <div className="mt-16">
             {renderColumns()}
-            <div className="absolute flex bottom-5 items-center ml-10 hover:bg-[#18b0c827] py-4 px-10 rounded-md hover:cursor-pointer">
+            <div
+              className="absolute flex bottom-5 items-center ml-10 hover:bg-[#18b0c827] py-4 px-10 rounded-md hover:cursor-pointer"
+              onClick={() => {
+                const value = `insert into session (sessionID,EmpID,sStart,sEnd) value (${
+                  count + 1
+                }, ${empID},'${setDate()}','${setDate()}')`;
+                setSession(value);
+                router.push("/");
+              }}
+            >
               <div className="bg-[#524f4f] rounded-md w-16 h-16 mr-5"></div>
               <h1 className="font-mono font-black text-xl text-center text-[#514949] dark:text-[#f7f7f7]">
                 {user}
@@ -172,9 +250,11 @@ export default function dashboard({ donors, Blood }) {
   );
 }
 
+// Getting Database data at build time
 export const getStaticProps = async () => {
   const UrlEndpoint = "http://localhost:3000/api/getdata";
 
+  // Getting Donors data
   const postData = {
     query: "SELECT * from Donors",
   };
@@ -188,6 +268,7 @@ export const getStaticProps = async () => {
 
   const res = await response.json();
 
+  // Getting BloodEntry data
   const postData2 = {
     query: "SELECT * from bloodentry",
   };
@@ -200,7 +281,19 @@ export const getStaticProps = async () => {
   });
   const res2 = await response2.json();
 
+  const postData3 = {
+    query: "SELECT * from users",
+  };
+  const response3 = await fetch(UrlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postData3),
+  });
+  const res3 = await response3.json();
+
   return {
-    props: { donors: res.data, Blood: res2.data },
+    props: { donors: res.data, Blood: res2.data, Users: res3.data },
   };
 };

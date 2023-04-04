@@ -36,8 +36,11 @@ const AddDonor = () => {
     },
   ];
 
+  // Set to contain bloodTypes
   const [selected, setselected] = useState<any>(new Set(["BloodGroup"]));
+  // Set to contain gender types
   const [gender, setgender] = useState<any>(new Set(["Gender"]));
+
   const [fname, setfname] = useState("");
   const [lname, setlname] = useState("");
   const [email, setemail] = useState("");
@@ -45,11 +48,14 @@ const AddDonor = () => {
   const [date, setdate] = useState("");
   const [dcount, setdcount] = useState<number>();
   const [bcount, setbcount] = useState<number>();
+  const [saved, setsaved] = useState(false);
 
   const age = 24;
 
+  // Getting Current date
   const currentdate = new Date();
 
+  // Return current in format that db accepts
   function setDate() {
     const day = currentdate.getDate();
     const month = currentdate.getMonth();
@@ -58,6 +64,7 @@ const AddDonor = () => {
     return `${year}-${month}-${day}`;
   }
 
+  // Shows underline
   function showUnderline(nan: string) {
     if (make == 0 && nan == "new") {
       return "border-b-2 border-b-[blue]";
@@ -84,6 +91,7 @@ const AddDonor = () => {
     [gender]
   );
 
+  // Getting count number of records in both Donor and BloodEntry Table
   async function getRlenght() {
     const postData = {
       query: "select count(*) from assignments.donors",
@@ -114,6 +122,7 @@ const AddDonor = () => {
     setdcount(res2.data[0]["count(*)"]);
   }
 
+  // Render theme Changer
   const renderOptions = () => {
     if (make == 0) {
       return (
@@ -278,6 +287,7 @@ const AddDonor = () => {
     }
   };
 
+  // Addint records to database
   async function setDataRecordData(query: string) {
     const postData = {
       query: query,
@@ -339,6 +349,7 @@ const AddDonor = () => {
     }
   }
 
+  // BloodType Checker
   function checkBlood(bl: string) {
     switch (bl) {
       case "A+":
@@ -370,6 +381,7 @@ const AddDonor = () => {
     }
   }
 
+  // Handles submit
   async function handlePress() {
     if (make == 0) {
       const check: boolean = checkData(
@@ -383,6 +395,7 @@ const AddDonor = () => {
       const query: string = `insert into donors(DonorID,FirstName,LastName,Age,Telephone,Email,BloodType,Gender) values (${bcount},'${fname}','${lname}',${age},${tel},'${email}','${SelectedValue}','${SelectedGender}')`;
       // console.log(query);
       await setDataRecordData(query);
+      setsaved(true);
     } else {
       const querresults: any = await getNeeded();
 
@@ -393,44 +406,72 @@ const AddDonor = () => {
       )}',${querresults["DonorID"]},${1},'${setDate()}')`;
       // console.log(query);
       await setDataRecordData(query);
+      setsaved(true);
     }
   }
+
+  // Renders Timeout
+  function timeout() {
+    setTimeout(() => {
+      setsaved(false);
+    }, 2500);
+  }
+
+  // Show when records successfully saved
+  const renderSaved = () => {
+    if (saved) {
+      timeout();
+      return (
+        <div
+          data-aos="fade-right"
+          className="left-10 absolute bg-[#30953063] p-2 rounded-sm"
+        >
+          <h1 className="text-xl font-mono font-bold">Donor Added</h1>
+        </div>
+      );
+    } else {
+    }
+  };
 
   useEffect(() => {
     getRlenght();
   }, []);
 
   return (
-    <div
-      data-aos="zoom-in"
-      className="m-10 bg-[#ffffff] rounded-lg dark:bg-[#161c29] p-4 transition ease-in duration-600"
-    >
-      <h1 className="text-left ml-16 font-black text-2xl font-mono mt-5 text-black dark:text-[#e4d7d7] ">
-        {"Add Donor".toUpperCase()}
-      </h1>
-      <div className="ml-44 mt-5 flex gap-20">
-        <div
-          onClick={() => {
-            setmake(0);
-          }}
-          className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
-            "new"
-          )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
-        >
-          New Donor
+    <div className="relative">
+      <div
+        data-aos="zoom-in"
+        className="m-10 bg-[#ffffff] rounded-lg dark:bg-[#161c29] p-4 transition ease-in duration-600"
+      >
+        <h1 className="text-left ml-16 font-black text-2xl font-mono mt-5 text-black dark:text-[#e4d7d7] ">
+          {"Add Donor".toUpperCase()}
+        </h1>
+        <div className="ml-44 mt-5 flex gap-20">
+          <div
+            onClick={() => {
+              setmake(0);
+            }}
+            className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
+              "new"
+            )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
+          >
+            New Donor
+          </div>
+          <div
+            onClick={() => {
+              setmake(1);
+            }}
+            className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
+              "exist"
+            )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
+          >
+            Already Existing
+          </div>
         </div>
-        <div
-          onClick={() => {
-            setmake(1);
-          }}
-          className={`font-bold text-xl font-Roboto cursor-pointer ${showUnderline(
-            "exist"
-          )} hover:border-b-2 hover:rounded-sm py-2 px-3`}
-        >
-          Already Existing
-        </div>
+        {renderOptions()}
       </div>
-      {renderOptions()}
+
+      {renderSaved()}
     </div>
   );
 };

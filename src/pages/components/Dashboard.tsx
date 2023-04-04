@@ -15,8 +15,6 @@ import {
 } from "chart.js";
 import { Radar, Line, Bar, PolarArea, Pie, Doughnut } from "react-chartjs-2";
 import { useTheme } from "next-themes";
-import { changeTheme } from "@nextui-org/react";
-import { Agent } from "http";
 
 const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   const [FullData, setFullData] = useState([]);
@@ -44,6 +42,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
 
   // Donor Vars
 
+  // Object of Ageranges DonorDB
   const AgeRanges: any = {
     10: 0,
     20: 0,
@@ -55,6 +54,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     80: 0,
   };
 
+  // Object of BloodCount DonorDB
   const BloodCount: any = {
     "A+": 0,
     "A-": 0,
@@ -66,9 +66,10 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     "B-": 0,
   };
 
+  // Object of GenderCount DonorDB
   const GenderCount: any = { Male: 0, Female: 0 };
 
-  // BloodEntry
+  // BloodEntryDB
   const _BloodCount: any = {
     "A+": 0,
     "A-": 0,
@@ -80,8 +81,10 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     "B-": 0,
   };
 
+  // Object gendercount BloodEntryDB
   const _GenderCount: any = { Male: 0, Female: 0 };
 
+  // Obejct of AgeRanges
   const _AgeRanges: any = {
     10: 0,
     20: 0,
@@ -93,6 +96,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     80: 0,
   };
 
+  // Object of year ranges
   const yearCount: any = {
     "2015": 0,
     "2016": 0,
@@ -105,7 +109,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     "2023": 0,
   };
 
-  // Settings
+  // Settings Curosel Slider Settingss
   const Settings = {
     dots: true,
     Infinity: false,
@@ -114,6 +118,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     slidesToScroll: 1,
   };
 
+  // Getting full data from both Donors and BloodEntry
   async function getFullData() {
     const postData = {
       query:
@@ -131,6 +136,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     setFullData(res.data);
   }
 
+  // Orgainsing Donor Data into acceptable formart
   function DonorCounter() {
     Object.keys(GenderCount).map((item) => {
       GenderCount[item] = 0;
@@ -206,6 +212,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     });
   }
 
+  // Leader Filter
   function Filter() {
     const n: number[] = [];
     const m: number[] = [];
@@ -251,6 +258,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     return Names.reverse();
   }
 
+  // Theme Changer
   function ChangeColor() {
     if (currentTheme === "dark") {
       const colorScheme = { text: "white", border: "" };
@@ -261,6 +269,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     }
   }
 
+  // Chart color Renderer
   function ColorDou() {
     if (currentTheme === "dark") {
       const colorScheme = { border: "#161c29" };
@@ -271,6 +280,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     }
   }
 
+  // Orgainsing Donor Data into acceptable formart
   function BloodCounter() {
     Object.keys(_GenderCount).map((item) => {
       _GenderCount[item] = 0;
@@ -348,6 +358,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     });
   }
 
+  // Organising year formart into acceptable format
   function checkYear() {
     FullData.map((e: any) => {
       const date: string = e["Date"].split("T")[0];
@@ -397,10 +408,11 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
   BloodCounter();
   DonorCounter();
 
-  console.log(BloodCount);
-  console.log(_BloodCount);
+  // console.log(BloodCount);
+  // console.log(_BloodCount);
 
   // Setting up data
+  // Donor
   const data = {
     labels: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     datasets: [
@@ -424,6 +436,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // BloodEntry
   const _data = {
     labels: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     datasets: [
@@ -447,6 +460,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // BloodEntry
   const _year = {
     labels: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
     datasets: [
@@ -491,6 +505,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // Donor
   const ageData = {
     labels: [
       "15-19",
@@ -523,6 +538,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // BloodEntry
   const _ageData = {
     labels: [
       "15-19",
@@ -555,6 +571,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // Donor
   const genderData = {
     labels: ["Male", "Female"],
     datasets: [
@@ -569,6 +586,7 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
     ],
   };
 
+  // BloodEntry
   const _genderData = {
     labels: ["Male", "Female"],
     datasets: [
@@ -604,23 +622,6 @@ const Dashboard = ({ ds, Bl }: { ds: []; Bl: [] }) => {
       },
     },
   };
-
-  // (async function () {
-  //   let ctx = document.getElementById("myChart");
-
-  //   let config = {
-  //     type: "radar",
-  //     data: data,
-  //     options: {
-  //       elements: {
-  //         line: {
-  //           borderWidth: 3,
-  //         },
-  //       },
-  //     },
-  //   };
-  //   let myChart = new Chartjs(ctx, config);
-  // })();
 
   useEffect(() => {
     getFullData();

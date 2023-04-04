@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import mysql from "mysql2/promise";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import bcrypt from "bcryptjs";
 import { useRouter } from "next/router";
@@ -9,7 +8,9 @@ import { useRouter } from "next/router";
 export default function Home() {
   // Theme Changer
   const { systemTheme, theme, setTheme } = useTheme();
+  // Checking if page is mounted
   const [mounted, setMounted] = useState(false);
+  // Ternary operators too check system default theme
   const currentTheme = theme === "system" ? systemTheme : theme;
 
   // Username and Password
@@ -29,6 +30,7 @@ export default function Home() {
   // Api endpoiont
   const UrlEndpoint = "http://localhost:3000/api/getdata";
 
+  // Reder Theme to Page
   const renderThemeChange = () => {
     if (!mounted) {
       return null;
@@ -56,6 +58,7 @@ export default function Home() {
     }
   };
 
+  // Show incorrect message when username and password is incorrect
   const renderIncorrectMessage = () => {
     if (render) {
       return (
@@ -63,10 +66,14 @@ export default function Home() {
           <h1 className="text-[red]">Incorrect username or password</h1>
         </div>
       );
+    } else {
+      return <div></div>;
     }
   };
 
+  // Function to verify employee login details
   function verifyUser() {
+    // Variable to check if user is found
     let found = false;
     users.forEach((user) => {
       // Check username and password
@@ -74,6 +81,7 @@ export default function Home() {
         username == user["Username"] &&
         bcrypt.compareSync(wordpass, user["Password"])
       ) {
+        // Setting variable to be keep in local storage
         window.localStorage.setItem("auth", "true");
         window.localStorage.setItem("user", user["Username"]);
         found = true;
@@ -88,6 +96,7 @@ export default function Home() {
     }
   }
 
+  // Not in use
   const Hashpassword = () => {
     const hashedpassword = bcrypt.hashSync(wordpass, 10);
     console.log(hashedpassword);
