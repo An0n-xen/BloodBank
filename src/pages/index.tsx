@@ -255,7 +255,7 @@ export default function Home() {
           {/* </form> */}
         </div>
         <p className="text-[12px] text-center mt-10">
-          © Copyright This remain the property of group 5
+          © Copyright This remain the property of An0n-Xen
         </p>
       </div>
     </>
