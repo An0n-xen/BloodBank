@@ -36,3 +36,27 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+<br>
+</br>
+<br>
+</br>
+
+## Database Structure
+This project consists of four tables which are all interlocked
+![db-Structure](https://user-images.githubusercontent.com/76828245/229993104-d9a371e1-8682-4cd1-b7c0-5808dd301a87.PNG)
+
+## User DB Structure
+![UserDB](https://user-images.githubusercontent.com/76828245/229993508-8de228c9-6555-471f-953a-d8c01bbc5244.PNG)
+
+## Donors DB Structure
+![DonorDB](https://user-images.githubusercontent.com/76828245/229993672-b2df3fc9-9b96-44ca-8d79-501cadececd1.PNG)
+
+## BloodEntry DB Structure
+![BloodEntryDB](https://user-images.githubusercontent.com/76828245/229993750-09d379a3-333b-460d-b1de-603c86a0048c.PNG)
+
+## Session DB Structure
+![SessionDB](https://user-images.githubusercontent.com/76828245/229993856-5acd12f4-21b6-43de-a059-4d2563d31cde.PNG)
+
+
+
