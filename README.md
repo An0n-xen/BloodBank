@@ -66,4 +66,4 @@ This project consists of four tables which are all interlocked
 ![Records2_dark](https://user-images.githubusercontent.com/76828245/229996008-981de8bd-8d28-4659-a0be-447aa514f6e1.png)
 
 # Setting Page
-
+![Settings](https://user-images.githubusercontent.com/76828245/229997489-4c1c6389-b149-4cb4-98da-1e31cf8f796e.PNG)
