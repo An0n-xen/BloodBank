@@ -43,5 +43,27 @@ This project consists of four tables which are all interlocked
 ## Session DB Structure
 ![SessionDB](https://user-images.githubusercontent.com/76828245/229993856-5acd12f4-21b6-43de-a059-4d2563d31cde.PNG)
 
+# THE DESIGN (Dark Theme)
 
+# Login Page
+![Screenshot (110)](https://user-images.githubusercontent.com/76828245/229995110-96ca6460-1c5e-4a98-ab71-ff8ff8d7f6d4.png)
+
+# Dashboard
+![dashboard_dark2](https://user-images.githubusercontent.com/76828245/229995497-74519905-ebc8-458e-8418-5eb16f878cb4.PNG)
+
+# Add Donor Page
+* New Donor
+![addDonor_dark](https://user-images.githubusercontent.com/76828245/229995682-a4f66ec6-4d48-478f-8823-c59b10f51387.png)
+
+* Already Existing Donor
+![newDonor_dark](https://user-images.githubusercontent.com/76828245/229995771-3c35b2f5-e57e-4611-aea8-cb36f84b6c80.png)
+
+# Records Page
+* Donor Records
+![Records_dark](https://user-images.githubusercontent.com/76828245/229995925-4075674a-8797-4bb2-9664-07861fa15e42.png)
+
+* BloodEntry Records
+![Records2_dark](https://user-images.githubusercontent.com/76828245/229996008-981de8bd-8d28-4659-a0be-447aa514f6e1.png)
+
+# Setting Page
 
